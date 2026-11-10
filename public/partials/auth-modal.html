@@ -1,0 +1,39 @@
+<!-- Modal de acceso. La lógica está en js/core/auth.js -->
+<div class="modal fade" id="authM" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered auth-dialog">
+    <div class="modal-content auth-content">
+      <div class="modal-body p-4">
+        <h4 class="text-center mb-1" id="authTitulo"></h4>
+        <p class="text-center text-secondary small" id="authMensaje"></p>
+
+        <div class="nav nav-pills nav-justified mb-3">
+          <button class="nav-link" data-ir="in">Ingresar</button>
+          <button class="nav-link" data-ir="up">Crear cuenta</button>
+          <button class="nav-link" data-ir="eq">Equipo</button>
+        </div>
+
+        <!-- Cliente que ya tiene cuenta -->
+        <div class="auth-vista" data-vista="in" data-titulo="Bienvenido" data-mensaje="Para agendar necesitamos saber quién eres" data-boton="Entrar" hidden>
+          <input name="tel" class="form-control mb-3" placeholder="Tu teléfono registrado">
+        </div>
+
+        <!-- Cliente nuevo -->
+        <div class="auth-vista" data-vista="up" data-titulo="Regístrate, es gratis" data-mensaje="Para agendar necesitamos saber quién eres" data-boton="Crear cuenta" hidden>
+          <input name="nombre" class="form-control mb-2" placeholder="Nombre completo">
+          <input name="tel" class="form-control mb-2" placeholder="Teléfono / WhatsApp">
+          <input name="correo" type="email" class="form-control mb-3" placeholder="Correo (te enviaremos la confirmación)">
+        </div>
+
+        <!-- Administrador o barbero -->
+        <div class="auth-vista" data-vista="eq" data-titulo="Acceso del equipo" data-mensaje="Barberos y administrador" data-boton="Entrar" hidden>
+          <input name="correo" class="form-control mb-2" placeholder="Correo">
+          <input name="clave" type="password" class="form-control mb-3" placeholder="Contraseña">
+          <p class="small text-secondary">Prueba: admin@barberia.com o carlos@barberia.com, clave 123456</p>
+        </div>
+
+        <div class="text-danger small mb-2" id="authError"></div>
+        <button class="btn btn-ink w-100" id="authEnviar"></button>
+      </div>
+    </div>
+  </div>
+</div>

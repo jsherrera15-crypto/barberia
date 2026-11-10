@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Panel · Calificaciones · Barbería El Corte</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/base.css" rel="stylesheet" />
+    <link href="/css/panel.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header id="top">
+      <!-- @include partials/navbar.html -->
+    </header>
+
+    <main id="app" class="container pb-5">
+      <!-- @include partials/panel-sin-acceso.html -->
+
+      <div id="panel" hidden>
+        <!-- @include partials/panel-head.html -->
+        <div class="row g-3 mb-3" id="resumen"></div>
+        <div class="box">
+          <div id="listaCalificaciones"></div>
+          <p class="m-0 text-secondary" id="sinCalificaciones" hidden>Aún no hay calificaciones. Aparecen cuando un cliente califica una cita completada.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Plantillas: panel-calificaciones.js las copia y las llena con los datos -->
+    <template id="tpl-resumen-barbero">
+      <div class="col-md-4">
+        <div class="box">
+          <b data-ref="nombre"></b>
+          <div class="fs-5 mt-1" data-ref="rate"></div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-calificacion">
+      <div class="border-bottom py-2">
+        <span class="gold" data-ref="estrellas"></span> · <span data-ref="barbero"></span> <span class="text-secondary" data-ref="detalle"></span>
+      </div>
+    </template>
+
+    <!-- @include partials/rate.html -->
+
+    <!-- @include partials/auth-modal.html -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/core/data.js"></script>
+    <script src="/js/core/auth.js"></script>
+    <script src="/js/core/layout.js"></script>
+    <script src="/js/pages/panel-calificaciones.js"></script>
+  </body>
+</html>

@@ -1,0 +1,161 @@
+/* Base: variables, tipografía, navbar, botones, formularios, estados */
+:root {
+  --ink: #0f2747;
+  --red: #d7263d;
+  --blue: #2b6cb0;
+  --bg: #eef2f6;
+  --line: #d6dee8;
+  --mut: #5d6b7e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Figtree, system-ui, sans-serif;
+}
+h1,
+h2,
+h3,
+.brand {
+  font-family: "Bricolage Grotesque", Figtree, sans-serif;
+  letter-spacing: -0.02em;
+}
+.top {
+  background: #fff;
+  padding: 0.8rem 0;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.pole {
+  height: 10px;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--red) 0 14px,
+    #fff 14px 28px,
+    var(--blue) 28px 42px,
+    #fff 42px 56px
+  );
+}
+.btn-ink {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+}
+.btn-ink:hover {
+  background: #1b3b69;
+  color: #fff;
+}
+.btn-ink:disabled {
+  background: #b9c3d0;
+  color: #fff;
+}
+.btn-line {
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+  border-radius: 10px;
+  background: transparent;
+}
+.btn-line:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.sec {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 2rem 0 0.8rem;
+}
+.box {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 1.2rem;
+}
+.badge-e {
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.e-reservada {
+  background: #e3eefb;
+  color: var(--blue);
+}
+.e-completada {
+  background: #dff3e6;
+  color: #1d7a3c;
+}
+.e-cancelada {
+  background: #e8ebef;
+  color: #68758a;
+}
+.e-no_asistio {
+  background: #fde4e7;
+  color: var(--red);
+}
+.stars button {
+  background: none;
+  border: 0;
+  font-size: 1.5rem;
+  color: #c3ccd8;
+  padding: 0 0.1rem;
+}
+.stars button.on,
+.stars button:hover {
+  color: #f0a500;
+}
+.nav-pills .nav-link {
+  color: var(--ink);
+  font-weight: 600;
+}
+.nav-pills .nav-link.active {
+  background: var(--ink);
+}
+.form-control {
+  border-radius: 10px;
+  border-color: var(--line);
+  padding: 0.65rem 0.8rem;
+}
+.form-control:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 0.2rem rgba(43, 108, 176, 0.2);
+}
+.toastx {
+  position: fixed;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  padding: 0.8rem 1.3rem;
+  border-radius: 12px;
+  z-index: 2000;
+  box-shadow: 0 8px 24px rgba(15, 39, 71, 0.3);
+}
+
+/* Ayudas de estructura (antes eran style="" dentro del JS) */
+[hidden] {
+  display: none !important;
+}
+/* Evita ver la página a medias mientras el JS arma la barra y el contenido */
+body:not(.listo) #top,
+body:not(.listo) #app {
+  visibility: hidden;
+}
+.gold {
+  color: #f0a500;
+}
+.auth-dialog {
+  max-width: 420px;
+}
+.auth-content {
+  border-radius: 18px;
+}

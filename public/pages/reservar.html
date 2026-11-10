@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Reservar · Barbería El Corte</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/base.css" rel="stylesheet" />
+    <link href="/css/cliente.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header id="top">
+      <!-- @include partials/navbar.html -->
+    </header>
+
+    <main id="app" class="container pb-5">
+      <a class="btn btn-link p-0 mt-4 text-decoration-none" href="/index.html#serv">
+        <i class="bi bi-arrow-left"></i> Volver a servicios
+      </a>
+
+      <!-- Servicio elegido -->
+      <div class="box mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h2 class="h4 m-0" id="svNombre"></h2>
+          <span class="text-secondary" id="svDetalle"></span>
+        </div>
+        <a class="btn btn-line btn-sm" href="/index.html#serv">Cambiar</a>
+      </div>
+
+      <!-- Paso 1: barbero -->
+      <h2 class="sec">Elige tu barbero</h2>
+      <div class="row g-3" id="barberos"></div>
+      <p class="text-secondary mt-3" id="msgElegir">Elige un barbero para ver su agenda.</p>
+
+      <!-- Pasos 2 y 3: día y hora (aparecen al elegir barbero) -->
+      <div id="agenda" hidden>
+        <h2 class="sec">Elige el día</h2>
+        <div class="box">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <b id="mesAnio"></b>
+            <div>
+              <button class="btn btn-line btn-sm" id="semPrev"><i class="bi bi-chevron-left"></i></button>
+              <button class="btn btn-line btn-sm" id="semNext"><i class="bi bi-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="row g-2 row-cols-7" id="dias"></div>
+        </div>
+
+        <h2 class="sec" id="horasTitulo"></h2>
+        <div class="d-flex flex-wrap gap-2" id="horas"></div>
+        <p class="text-secondary small mt-2" id="horasNota">Las horas tachadas ya están ocupadas.</p>
+        <p class="text-secondary" id="sinHoras" hidden>Este barbero no atiende ese día. Prueba con otra fecha.</p>
+
+        <div class="text-center mt-4">
+          <button class="btn btn-ink btn-lg px-5" id="btnAgendar"><i class="bi bi-check-circle"></i> Agendar cita</button>
+          <div class="text-secondary small mt-2" id="agendarNota">Elige una hora para poder agendar</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Plantillas: reservar.js las copia y las llena con los datos -->
+    <template id="tpl-barbero">
+      <div class="col-md-6">
+        <button class="bar" data-ref="boton">
+          <span class="av" data-ref="inicial"></span>
+          <span><b data-ref="nombre"></b><br><small data-ref="rate"></small></span>
+        </button>
+      </div>
+    </template>
+
+    <template id="tpl-dia">
+      <div class="col">
+        <button class="day w-100" data-ref="boton"><small data-ref="dia"></small></button>
+      </div>
+    </template>
+
+    <template id="tpl-hora">
+      <button class="slot"></button>
+    </template>
+
+    <!-- @include partials/rate.html -->
+    <!-- @include partials/auth-modal.html -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/core/utils.js"></script>
+    <script src="/js/core/data.js"></script>
+    <script src="/js/core/auth.js"></script>
+    <script src="/js/core/layout.js"></script>
+    <script src="/js/pages/reservar.js"></script>
+  </body>
+</html>

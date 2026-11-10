@@ -1,0 +1,9 @@
+/* Panel de barbero y administrador */
+.table {
+  --bs-table-bg: transparent;
+}
+.table th {
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 0.9rem;
+}

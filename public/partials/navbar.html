@@ -1,0 +1,26 @@
+<nav class="top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="brand" href="/index.html">✂ El Corte</a>
+    <!-- layout.js llena este espacio según quién tenga la sesión iniciada -->
+    <div class="d-flex gap-2 align-items-center" id="topActions"></div>
+  </div>
+</nav>
+<div class="pole"></div>
+
+<!-- Variante: visitante sin sesión -->
+<template id="tpl-nav-anon">
+  <button class="btn btn-line btn-sm" data-ref="entrar"><i class="bi bi-box-arrow-in-right"></i> Accede</button>
+</template>
+
+<!-- Variante: cliente con sesión -->
+<template id="tpl-nav-cliente">
+  <a class="btn btn-line btn-sm" href="/pages/mis-citas.html">Mis citas</a>
+  <span class="d-none d-md-inline text-secondary" data-ref="nombre"></span>
+  <button class="btn btn-sm btn-link text-secondary" data-ref="salir">Salir</button>
+</template>
+
+<!-- Variante: administrador o barbero con sesión -->
+<template id="tpl-nav-equipo">
+  <a class="btn btn-line btn-sm" href="/pages/panel/citas.html">Panel</a>
+  <button class="btn btn-sm btn-link text-secondary" data-ref="salir">Salir</button>
+</template>

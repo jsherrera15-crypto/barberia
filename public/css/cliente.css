@@ -1,0 +1,182 @@
+/* Cliente: portada, servicios, barberos, calendario y horas */
+.hero {
+  padding: 3.5rem 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  gap: 2rem;
+  align-items: center;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.hero p {
+  max-width: 56ch;
+  color: var(--mut);
+  font-size: 1.05rem;
+}
+.polebig {
+  height: 300px;
+  width: 84px;
+  justify-self: center;
+  border-radius: 42px;
+  border: 5px solid #fff;
+  box-shadow: 0 0 0 2px var(--ink);
+  background: repeating-linear-gradient(
+    160deg,
+    var(--red) 0 22px,
+    #fff 22px 44px,
+    var(--blue) 44px 66px,
+    #fff 66px 88px
+  );
+  background-size: 100% 176px;
+  animation: spin 5s linear infinite;
+}
+@keyframes spin {
+  to {
+    background-position: 0 176px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .polebig {
+    animation: none;
+  }
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.svc {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.4rem;
+  cursor: pointer;
+  color: var(--ink);
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.svc:hover,
+.svc:focus-visible {
+  border-color: var(--red);
+  transform: translateY(-2px);
+  outline: 0;
+}
+.svc b.n {
+  font-family: "Bricolage Grotesque";
+  font-size: 1.1rem;
+}
+.svc .m {
+  display: flex;
+  justify-content: space-between;
+  color: var(--mut);
+  font-size: 0.92rem;
+}
+.svc .m b {
+  color: var(--ink);
+}
+.bar {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.bar:hover {
+  border-color: var(--blue);
+}
+.bar.on {
+  border-color: var(--red);
+  background: #fff5f6;
+}
+.av {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--blue);
+}
+.day {
+  border: 1.5px solid var(--line);
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  text-align: center;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.day small {
+  display: block;
+  color: var(--mut);
+  font-weight: 500;
+}
+.day:disabled {
+  opacity: 0.35;
+}
+.day.on {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.day.on small {
+  color: #cfd9e8;
+}
+.slot {
+  border: 1.5px solid var(--blue);
+  color: var(--blue);
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+}
+.slot:hover {
+  background: #eaf2fb;
+}
+.slot.on {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.slot:disabled {
+  border-color: var(--line);
+  color: #a3aebc;
+  text-decoration: line-through;
+  background: #f6f8fb;
+}
+@media (max-width: 700px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .polebig {
+    display: none;
+  }
+}
+.buscador {
+  max-width: 420px;
+}
