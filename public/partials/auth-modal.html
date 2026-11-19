@@ -13,22 +13,23 @@
         </div>
 
         <!-- Cliente que ya tiene cuenta -->
-        <div class="auth-vista" data-vista="in" data-titulo="Bienvenido" data-mensaje="Para agendar necesitamos saber quién eres" data-boton="Entrar" hidden>
-          <input name="tel" class="form-control mb-3" placeholder="Tu teléfono registrado">
+        <div class="auth-vista" data-vista="in" data-titulo="Bienvenido" data-mensaje="Ingresa con tu teléfono y contraseña" data-boton="Entrar" hidden>
+          <input name="tel" autocomplete="username" class="form-control mb-2" placeholder="Teléfono registrado">
+          <input name="clave" type="password" autocomplete="current-password" class="form-control mb-3" placeholder="Contraseña">
         </div>
 
         <!-- Cliente nuevo -->
-        <div class="auth-vista" data-vista="up" data-titulo="Regístrate, es gratis" data-mensaje="Para agendar necesitamos saber quién eres" data-boton="Crear cuenta" hidden>
-          <input name="nombre" class="form-control mb-2" placeholder="Nombre completo">
-          <input name="tel" class="form-control mb-2" placeholder="Teléfono / WhatsApp">
-          <input name="correo" type="email" class="form-control mb-3" placeholder="Correo (te enviaremos la confirmación)">
+        <div class="auth-vista" data-vista="up" data-titulo="Regístrate, es gratis" data-mensaje="Crea una cuenta para agendar y consultar tus citas" data-boton="Crear cuenta" hidden>
+          <input name="nombre" autocomplete="name" class="form-control mb-2" placeholder="Nombre completo">
+          <input name="tel" autocomplete="tel" class="form-control mb-2" placeholder="Teléfono / WhatsApp">
+          <input name="correo" type="email" autocomplete="email" class="form-control mb-2" placeholder="Correo electrónico">
+          <input name="clave" type="password" autocomplete="new-password" minlength="6" maxlength="128" class="form-control mb-3" placeholder="Contraseña (mín. 6 caracteres)">
         </div>
 
         <!-- Administrador o barbero -->
         <div class="auth-vista" data-vista="eq" data-titulo="Acceso del equipo" data-mensaje="Barberos y administrador" data-boton="Entrar" hidden>
-          <input name="correo" class="form-control mb-2" placeholder="Correo">
-          <input name="clave" type="password" class="form-control mb-3" placeholder="Contraseña">
-          <p class="small text-secondary">Prueba: admin@barberia.com o carlos@barberia.com, clave 123456</p>
+          <input name="correo" autocomplete="username" class="form-control mb-2" placeholder="Correo">
+          <input name="clave" type="password" autocomplete="current-password" class="form-control mb-3" placeholder="Contraseña">
         </div>
 
         <div class="text-danger small mb-2" id="authError"></div>

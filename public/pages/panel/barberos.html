@@ -33,7 +33,7 @@
           <div class="row g-2 mb-4">
             <div class="col-md-3"><input id="nNombre" class="form-control" placeholder="Nombre" /></div>
             <div class="col-md-4"><input id="nCorreo" class="form-control" placeholder="Correo" /></div>
-            <div class="col-md-3"><input id="nClave" type="password" class="form-control" placeholder="Contraseña (mín. 6)" /></div>
+            <div class="col-md-3"><input id="nClave" type="password" minlength="6" maxlength="128" autocomplete="new-password" class="form-control" placeholder="Contraseña (mín. 6)" /></div>
             <div class="col-md-2"><button class="btn btn-ink w-100" id="btnCrear">Crear barbero</button></div>
           </div>
           <div id="errorBarbero" class="text-danger small mb-2"></div>

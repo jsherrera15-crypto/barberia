@@ -1,64 +1,51 @@
 # Barbería El Corte
 
-Frontend de reservas servido por un servidor **Node.js + Express** local.
-Por ahora no hay base de datos: los datos de prueba viven en el `localStorage` del navegador.
+Aplicación de reservas con frontend HTML/CSS/JavaScript y backend Node.js + Express conectado a MySQL/MariaDB. Puedes administrar la base desde phpMyAdmin.
 
-## Cómo correrlo
+## Preparar phpMyAdmin (XAMPP)
 
-Necesitas [Node.js](https://nodejs.org) 18 o superior.
+1. Inicia MySQL desde el panel de XAMPP y abre phpMyAdmin.
+2. Crea una base de datos llamada `barberia_el_corte` con cotejamiento `utf8mb4_unicode_ci`.
+3. Copia `.env.example` como `.env` en la carpeta del proyecto. Configura `DB_USER` y `DB_PASSWORD` con las credenciales de MySQL que usas para phpMyAdmin. `DB_HOST`, `DB_PORT` y `DB_NAME` ya tienen valores para una instalación local habitual.
+4. Ejecuta `npm install` y luego `npm start`. Con la configuración actual abre <http://localhost:3006>.
 
-```bash
-npm install      # solo la primera vez
-npm start        # abre http://localhost:3000
-```
+El servidor crea las tablas dentro de `barberia_el_corte` cuando inicia. Los nombres son `users`, `services`, `appointments`, `ratings` y `sessions`. No guardes el archivo `.env` en Git ni compartas su contraseña.
 
-Mientras trabajas puedes usar `npm run dev`: el servidor se reinicia solo cuando cambias `server.js`.
-(Los cambios en `public/` solo requieren recargar el navegador.)
+Requisitos: Node.js 24 o superior y MySQL/MariaDB iniciado. El controlador MySQL es `mysql2`.
 
-Si el puerto 3000 está ocupado, cambia `PORT` en `server.js` o define la variable de entorno `PORT`.
+## Primer inicio
+
+La cuenta administradora predeterminada es `admin@gmail.com`, contraseña `Admin123`. Al iniciar, el servidor crea o actualiza esa cuenta y guarda la contraseña como hash en MySQL. Si migra el administrador anterior de SQLite, lo convierte a estas credenciales.
+
+Usa `npm run dev` durante el desarrollo. El puerto HTTP se puede cambiar con `PORT`.
+
+## Funcionalidades
+
+- Catálogo de servicios y disponibilidad de barberos.
+- Registro e inicio de sesión de clientes con contraseña.
+- Reservas, cancelación de citas futuras e historial.
+- Panel del personal para consultar su agenda y actualizar citas.
+- Panel de administración para gestionar barberos y consultar calificaciones.
+- Las operaciones validan permisos y disponibilidad en el servidor.
 
 ## Estructura
 
 ```
-barberia-front/
-├─ server.js                       Servidor Express (sirve public/ e inserta los partials)
-├─ package.json
-└─ public/                         Todo lo que ve el navegador
-   ├─ index.html                   Portada + servicios
-   ├─ pages/
-   │  ├─ reservar.html             Barbero → día → hora → agendar
-   │  ├─ mis-citas.html            Citas del cliente (cancelar y calificar)
-   │  └─ panel/
-   │     ├─ citas.html             Admin: todas · Barbero: las suyas
-   │     ├─ barberos.html          Admin: crear y eliminar barberos
-   │     └─ calificaciones.html    Admin: promedio y comentarios
-   ├─ partials/                    HTML compartido (se escribe una sola vez)
-   │  ├─ navbar.html               Barra superior y sus 3 variantes
-   │  ├─ auth-modal.html           Modal de ingresar / crear cuenta / equipo
-   │  ├─ panel-head.html           Título y pestañas del panel
-   │  ├─ panel-sin-acceso.html     Aviso "Acceso solo para el equipo"
-   │  └─ rate.html                 Estrella + promedio
-   ├─ css/    base.css · cliente.css · panel.css
-   └─ js/
-      ├─ core/    utils.js · data.js · auth.js · layout.js
-      └─ pages/   un archivo por página
+server.js                         Express y rutas de la API
+database.js                       conexión MySQL, esquema e importación SQLite
+.env.example                      configuración local de ejemplo
+public/
+  index.html                      portada y catálogo
+  pages/                          reserva, mis citas y paneles
+  partials/                       navbar, modal de acceso y plantillas
+  css/                            estilos
+  js/core/                        API del frontend, acceso y layout
+  js/pages/                       interacción de cada página
+data/barberia.sqlite              base local anterior (si existe)
 ```
 
-## Cómo está dividido el trabajo
+## Migración desde SQLite
 
-- **HTML = estructura (lo visual).** Cada página trae su maquetación completa. Los elementos que se repiten
-  (una tarjeta de servicio, una fila de la tabla, una hora) están como `<template>` dentro del mismo HTML.
-- **JavaScript = lógica (la interacción).** Los scripts copian esas plantillas con `plantilla("id")`, llenan los
-  datos con `textContent` y conectan los clics con `addEventListener`. No hay HTML escrito dentro del JS.
-- Los marcadores `data-ref="nombre"` dentro de una plantilla indican qué elemento se llena:
-  `refs(nodo).nombre.textContent = "..."`.
-- **Partials:** `<!-- @include partials/navbar.html -->` lo reemplaza `server.js` por el contenido del archivo
-  antes de enviar la página. Por eso las páginas deben abrirse desde el servidor (no con doble clic al `.html`).
+Al iniciar, si encuentra `data/barberia.sqlite` y la tabla `users` de MySQL está vacía, importa usuarios, servicios, citas y calificaciones en una transacción, conservando los hashes de contraseña. No migra sesiones activas. Los datos antiguos guardados únicamente en el `localStorage` del navegador no se pueden leer desde el servidor y requieren una migración aparte.
 
-## Datos de prueba
-
-`admin@barberia.com` y `carlos@barberia.com`, clave `123456`.
-Clientes: cualquier teléfono nuevo se registra en "Crear cuenta"; el de ejemplo es `3000000000`.
-
-`js/core/data.js` es el único lugar que habla con los datos: al conectar la base de datos se cambia ahí
-(y se agregan las rutas `/api` en `server.js`).
+Clientes y barberos pueden usar contraseñas de 6 a 128 caracteres. Las sesiones usan cookies HttpOnly y las contraseñas se almacenan con scrypt. En producción, usa HTTPS para activar la cookie `Secure`. Esta versión aún no envía correos de confirmación ni permite configurar horarios distintos por barbero.

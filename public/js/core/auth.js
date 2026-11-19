@@ -1,82 +1,81 @@
-/* Login y registro (modal): cliente por teléfono, equipo (admin/barbero) por correo y clave.
-   El HTML del modal está en partials/auth-modal.html; aquí solo está la lógica. */
+/* Inicio de sesión y registro: la autenticación y autorización se validan en el servidor. */
 let authM,
-  pendCb = null, // acción que se retoma al terminar el login (ej. agendar la cita)
-  authVista = "in"; // pestaña activa: in (ingresar) · up (crear cuenta) · eq (equipo)
+  pendCb = null,
+  authVista = "in";
 
-function openAuth(t, msg) {
+function openAuth(view = "in", message = "") {
   authM = authM || new bootstrap.Modal("#authM");
-  authView(t, msg);
+  authView(view, message);
   authM.show();
 }
 
-/* Muestra una de las tres vistas del modal y limpia campos y errores */
-function authView(t, msg = "") {
-  authVista = t;
-  const vista = $(`.auth-vista[data-vista="${t}"]`);
-  $$(".auth-vista").forEach((v) => (v.hidden = v !== vista));
-  $$("#authM [data-ir]").forEach((b) =>
-    b.classList.toggle("active", b.dataset.ir === t),
+function authView(view, message = "") {
+  authVista = view;
+  const active = $(`.auth-vista[data-vista="${view}"]`);
+  $$(".auth-vista").forEach((item) => (item.hidden = item !== active));
+  $$("#authM [data-ir]").forEach((button) =>
+    button.classList.toggle("active", button.dataset.ir === view),
   );
-  $$("#authM input").forEach((i) => (i.value = ""));
-  $("#authTitulo").textContent = vista.dataset.titulo;
-  $("#authMensaje").textContent = msg || vista.dataset.mensaje;
-  $("#authEnviar").textContent = vista.dataset.boton;
+  $$("#authM input").forEach((input) => (input.value = ""));
+  $("#authTitulo").textContent = active.dataset.titulo;
+  $("#authMensaje").textContent = message || active.dataset.mensaje;
+  $("#authEnviar").textContent = active.dataset.boton;
   $("#authError").textContent = "";
 }
 
-function auth(t) {
-  const vista = $(`.auth-vista[data-vista="${t}"]`);
-  const v = (campo) => ($(`[name="${campo}"]`, vista)?.value || "").trim(),
-    err = (m) => ($("#authError").textContent = m);
-  if (t === "eq") {
-    const a = db.admin,
-      b = db.barberos.find(
-        (x) =>
-          x.activo && x.correo === v("correo") && x.password === v("clave"),
-      );
-    if (a.correo === v("correo") && a.password === v("clave"))
-      db.sesion = { rol: "admin" };
-    else if (b) db.sesion = { rol: "barbero", id: b.id };
-    else return err("Correo o contraseña incorrectos.");
-    save();
+async function auth(view) {
+  const panel = $(`.auth-vista[data-vista="${view}"]`);
+  const value = (name) => $(`[name="${name}"]`, panel)?.value.trim() || "";
+  const button = $("#authEnviar");
+  button.disabled = true;
+  try {
+    let result;
+    if (view === "up") {
+      result = await api("/api/auth/register", {
+        method: "POST",
+        body: { name: value("nombre"), phone: value("tel"), email: value("correo"), password: value("clave") },
+      });
+    } else {
+      result = await api("/api/auth/login", {
+        method: "POST",
+        body: { identifier: view === "in" ? value("tel") : value("correo"), password: value("clave") },
+      });
+    }
+    db.user = result.user;
     authM.hide();
-    return go("pages/panel/citas.html");
-  }
-  const tel = v("tel").replace(/\D/g, "");
-  if (tel.length < 7) return err("Escribe un teléfono válido.");
-  if (t === "up") {
-    if (v("nombre").length < 3 || !/^\S+@\S+\.\S+$/.test(v("correo")))
-      return err("Completa tu nombre y un correo válido.");
-    if (cl(tel))
-      return err("Ese teléfono ya tiene cuenta. Usa la pestaña Ingresar.");
-    db.clientes.push({
-      tel,
-      nombre: v("nombre"),
-      correo: v("correo"),
-      visitas: 0,
-    });
-  } else if (!cl(tel))
-    return err("No encontramos ese número. Crea tu cuenta primero.");
-  db.sesion = { rol: "cliente", tel };
-  save();
-  authM.hide();
-  if (pendCb) {
-    const f = pendCb;
-    pendCb = null;
     mountTop();
-    f();
-  } else location.reload();
+    if (pendCb) {
+      const callback = pendCb;
+      pendCb = null;
+      return callback();
+    }
+    if (db.user.role !== "cliente") return go("pages/panel/citas.html");
+    location.reload();
+  } catch (error) {
+    $("#authError").textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
 }
 
-function salir() {
-  db.sesion = null;
-  save();
-  go("index.html");
+async function salir() {
+  try {
+    await api("/api/auth/logout", { method: "POST" });
+    db.user = null;
+    go("index.html");
+  } catch (error) {
+    toast(error.message);
+  }
 }
 
-/* Eventos del modal */
-$$("#authM [data-ir]").forEach((b) =>
-  b.addEventListener("click", () => authView(b.dataset.ir)),
-);
-$("#authEnviar").addEventListener("click", () => auth(authVista));
+$("#authM [data-ir]")?.closest(".nav")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-ir]");
+  if (button) authView(button.dataset.ir);
+});
+$("#authEnviar")?.addEventListener("click", () => auth(authVista));
+$("#authM")?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    auth(authVista);
+  }
+});

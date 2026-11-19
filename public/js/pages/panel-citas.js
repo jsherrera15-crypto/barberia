@@ -1,42 +1,42 @@
-/* Módulo del panel: citas (admin ve todas, barbero solo las suyas).
-   La estructura está en pages/panel/citas.html */
-function render() {
+/* Agenda de administración o barbero. El backend filtra y valida cada operación. */
+async function render() {
   if (!panelHead("citas")) return;
-  const ad = db.sesion.rol === "admin",
-    citas = db.citas
-      .filter((c) => ad || c.barberoId === db.sesion.id)
-      .sort((a, b) => a.inicio.localeCompare(b.inicio));
+  const { appointments } = await api("/api/staff/appointments");
+  const rows = $("#filas");
+  rows.replaceChildren();
+  if (!appointments.length) {
+    const empty = plantilla("tpl-fila-vacia");
+    if (db.user.role !== "admin") $("td", empty).colSpan = 5;
+    rows.append(empty);
+  }
 
-  const filas = $("#filas");
-  filas.replaceChildren();
-  if (!citas.length) filas.append(plantilla("tpl-fila-vacia"));
+  appointments.forEach((appointment) => {
+    const row = plantilla("tpl-fila");
+    const ref = refs(row);
+    ref.dia.textContent = appointment.startsAt.slice(0, 10);
+    ref.hora.textContent = h12(appointment.startsAt.slice(11));
+    ref.cliente.textContent = appointment.clientName;
+    ref.tel.textContent = appointment.clientPhone || "";
+    if (db.user.role === "admin") ref.barbero.textContent = appointment.barberName;
+    else ref.barbero.remove();
+    ref.servicio.textContent = appointment.serviceName;
+    ref.estado.classList.add("e-" + appointment.status);
+    ref.estado.textContent = appointment.status.replace("_", " ");
 
-  citas.forEach((c) => {
-    const fila = plantilla("tpl-fila");
-    const t = refs(fila);
-    t.dia.textContent = c.inicio.slice(0, 10);
-    t.hora.textContent = h12(c.inicio.slice(11));
-    t.cliente.textContent = cl(c.tel)?.nombre ?? "";
-    t.tel.textContent = c.tel;
-    if (ad) t.barbero.textContent = br(c.barberoId).nombre;
-    else t.barbero.remove();
-    t.servicio.textContent = sv(c.servicioId).nombre;
-    t.estado.classList.add("e-" + c.estado);
-    t.estado.textContent = c.estado.replace("_", " ");
-
-    /* Solo las citas reservadas tienen botones: Completar, No asistió y Cancelar */
-    if (c.estado === "reservada") {
-      const acciones = plantilla("tpl-acciones-cita");
-      $$("[data-estado]", acciones).forEach((boton) =>
-        boton.addEventListener("click", () => {
-          estado(c.id, boton.dataset.estado);
-          render();
-        }),
-      );
-      t.acciones.append(acciones);
+    if (appointment.status === "reservada") {
+      const actions = plantilla("tpl-acciones-cita");
+      $$('[data-estado]', actions).forEach((button) => button.addEventListener("click", async () => {
+        try {
+          await api(`/api/staff/appointments/${appointment.id}/status`, {
+            method: "PATCH", body: { status: button.dataset.estado },
+          });
+          await render();
+        } catch (error) { toast(error.message); }
+      }));
+      ref.acciones.append(actions);
     }
-    filas.append(fila);
+    rows.append(row);
   });
 }
 
-render();
+appReady.then((ready) => ready && render().catch((error) => toast(error.message)));
