@@ -26,12 +26,17 @@ async function render() {
     if (appointment.status === "reservada") {
       const actions = plantilla("tpl-acciones-cita");
       $$('[data-estado]', actions).forEach((button) => button.addEventListener("click", async () => {
+        button.disabled = true;
         try {
-          await api(`/api/staff/appointments/${appointment.id}/status`, {
+          const result = await api(`/api/staff/appointments/${appointment.id}/status`, {
             method: "PATCH", body: { status: button.dataset.estado },
           });
+          toast(result.message);
           await render();
-        } catch (error) { toast(error.message); }
+        } catch (error) {
+          toast(error.message);
+          button.disabled = false;
+        }
       }));
       ref.acciones.append(actions);
     }
@@ -39,4 +44,4 @@ async function render() {
   });
 }
 
-appReady.then((ready) => ready && render().catch((error) => toast(error.message)));
+whenReady(render);

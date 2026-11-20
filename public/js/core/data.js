@@ -2,11 +2,15 @@
 const db = { services: [], barbers: [], user: null, rating: null };
 
 async function api(url, options = {}) {
+  const { body, headers = {}, ...requestOptions } = options;
   const response = await fetch(url, {
+    ...requestOptions,
     credentials: "same-origin",
-    headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...options.headers },
-    ...options,
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    headers: {
+      ...(body ? { "Content-Type": "application/json" } : {}),
+      ...headers,
+    },
+    body: body ? JSON.stringify(body) : undefined,
   });
   if (response.status === 204) return null;
   const data = await response.json().catch(() => ({}));
@@ -27,6 +31,12 @@ const appReady = api("/api/bootstrap").then((data) => {
   toast(`No se pudo conectar con el servidor: ${error.message}`);
   return false;
 });
+
+function whenReady(callback) {
+  return appReady
+    .then((ready) => (ready ? callback() : undefined))
+    .catch((error) => toast(error.message));
+}
 
 const sv = (id) => db.services.find((s) => Number(s.id) === Number(id)),
   br = (id) => db.barbers.find((b) => Number(b.id) === Number(id)),

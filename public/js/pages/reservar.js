@@ -109,15 +109,21 @@ async function agendar() {
   }
 }
 
-appReady.then((ready) => {
-  if (!ready) return;
+whenReady(() => {
   const service = sv(B.serviceId);
   if (!service) return go("index.html");
+  const isClient = !!me();
+  $("#reservaRequiereAcceso").hidden = isClient;
+  $("#contenidoReserva").hidden = !isClient;
+  $("#btnReservaIniciar").addEventListener("click", () => openAuth("in"));
+  $("#btnReservaCrear").addEventListener("click", () => openAuth("up"));
+  if (!isClient) return;
+
   $("#svNombre").textContent = service.name;
   $("#svDetalle").textContent = `${dur(service.duration)} · ${money(service.price)}`;
   $("#semPrev").addEventListener("click", () => { B.week--; pintarAgenda(); });
   $("#semNext").addEventListener("click", () => { B.week++; pintarAgenda(); });
   $("#btnAgendar").addEventListener("click", agendar);
   pintarBarberos();
-  pintarAgenda();
+  return pintarAgenda();
 });

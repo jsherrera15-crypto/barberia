@@ -5,6 +5,7 @@ function mountTop() {
   const refsNode = refs(node);
   if (cliente) refsNode.nombre.textContent = cliente.name.split(" ")[0];
   refsNode.entrar?.addEventListener("click", () => openAuth("in"));
+  refsNode.registrar?.addEventListener("click", () => openAuth("up"));
   refsNode.salir?.addEventListener("click", salir);
   $("#topActions").replaceChildren(node);
 }
@@ -23,8 +24,7 @@ function panelHead(active, soloAdmin = false) {
   return true;
 }
 
-appReady.then((ready) => {
-  if (!ready) return;
+whenReady(() => {
   mountTop();
   $("#btnPanelLogin")?.addEventListener("click", () => openAuth("eq"));
   document.body.classList.add("listo");

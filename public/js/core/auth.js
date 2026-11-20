@@ -13,9 +13,6 @@ function authView(view, message = "") {
   authVista = view;
   const active = $(`.auth-vista[data-vista="${view}"]`);
   $$(".auth-vista").forEach((item) => (item.hidden = item !== active));
-  $$("#authM [data-ir]").forEach((button) =>
-    button.classList.toggle("active", button.dataset.ir === view),
-  );
   $$("#authM input").forEach((input) => (input.value = ""));
   $("#authTitulo").textContent = active.dataset.titulo;
   $("#authMensaje").textContent = message || active.dataset.mensaje;
@@ -68,9 +65,9 @@ async function salir() {
   }
 }
 
-$("#authM [data-ir]")?.closest(".nav")?.addEventListener("click", (event) => {
+$("#authM")?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-ir]");
-  if (button) authView(button.dataset.ir);
+  if (button && $("#authM").contains(button)) authView(button.dataset.ir);
 });
 $("#authEnviar")?.addEventListener("click", () => auth(authVista));
 $("#authM")?.addEventListener("keydown", (event) => {

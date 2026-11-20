@@ -55,4 +55,4 @@ async function render() {
 }
 
 $("#btnAcceder").addEventListener("click", () => openAuth("in"));
-appReady.then((ready) => ready && render().catch((error) => toast(error.message)));
+whenReady(render);

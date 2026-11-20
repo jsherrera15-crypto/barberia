@@ -25,4 +25,4 @@ async function render() {
   });
 }
 
-appReady.then((ready) => ready && render().catch((error) => toast(error.message)));
+whenReady(render);

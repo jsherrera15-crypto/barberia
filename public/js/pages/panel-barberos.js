@@ -42,4 +42,4 @@ async function addBarber() {
 }
 
 $("#btnCrear").addEventListener("click", addBarber);
-appReady.then((ready) => ready && render().catch((error) => toast(error.message)));
+whenReady(render);

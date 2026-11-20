@@ -86,22 +86,22 @@ const schema = [
 
 async function migrateLegacySqlite() {
   const file = path.join(process.env.DATA_DIR || path.join(__dirname, "data"), "barberia.sqlite");
-  if (!fs.existsSync(file)) return false;
+  if (!fs.existsSync(file)) return;
   const [[userCount]] = await db.query("SELECT COUNT(*) AS total FROM users");
-  if (Number(userCount.total) > 0) return false;
+  if (Number(userCount.total) > 0) return;
 
   let legacy;
   try {
     const { DatabaseSync } = require("node:sqlite");
     legacy = new DatabaseSync(file, { readOnly: true });
     const tables = new Set(legacy.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map((x) => x.name));
-    if (!["users", "services", "appointments", "ratings"].every((table) => tables.has(table))) return false;
+    if (!["users", "services", "appointments", "ratings"].every((table) => tables.has(table))) return;
 
     const users = legacy.prepare("SELECT id,role,name,email,phone,password_hash,active,created_at FROM users").all();
     const services = legacy.prepare("SELECT id,category,name,duration,price,active FROM services").all();
     const appointments = legacy.prepare("SELECT id,client_id,barber_id,service_id,starts_at,ends_at,price,status,created_at FROM appointments").all();
     const ratings = legacy.prepare("SELECT id,appointment_id,client_id,barber_id,stars,created_at FROM ratings").all();
-    if (!users.length && !services.length) return false;
+    if (!users.length && !services.length) return;
 
     const conn = await db.getConnection();
     try {
@@ -124,7 +124,6 @@ async function migrateLegacySqlite() {
       );
       await conn.commit();
       console.log(`Se migraron datos locales a MySQL: ${users.length} cuentas, ${services.length} servicios, ${appointments.length} citas y ${ratings.length} calificaciones.`);
-      return true;
     } catch (error) {
       await conn.rollback();
       throw error;

@@ -37,7 +37,7 @@ database.js                       conexión MySQL, esquema e importación SQLite
 public/
   index.html                      portada y catálogo
   pages/                          reserva, mis citas y paneles
-  partials/                       navbar, modal de acceso y plantillas
+  partials/                       cabecera, scripts, navbar y plantillas compartidas
   css/                            estilos
   js/core/                        API del frontend, acceso y layout
   js/pages/                       interacción de cada página

@@ -9,7 +9,14 @@
 
 <!-- Variante: visitante sin sesión -->
 <template id="tpl-nav-anon">
-  <button class="btn btn-line btn-sm" data-ref="entrar"><i class="bi bi-box-arrow-in-right"></i> Accede</button>
+  <button class="btn btn-line btn-sm" data-ref="entrar">
+    <i class="bi bi-box-arrow-in-right"></i>
+    <span class="d-none d-sm-inline">Iniciar sesión</span>
+    <span class="d-sm-none">Entrar</span>
+  </button>
+  <button class="btn btn-ink btn-sm" data-ref="registrar">
+    <i class="bi bi-person-plus"></i> Crear cuenta
+  </button>
 </template>
 
 <!-- Variante: cliente con sesión -->

@@ -6,30 +6,30 @@
         <h4 class="text-center mb-1" id="authTitulo"></h4>
         <p class="text-center text-secondary small" id="authMensaje"></p>
 
-        <div class="nav nav-pills nav-justified mb-3">
-          <button class="nav-link" data-ir="in">Ingresar</button>
-          <button class="nav-link" data-ir="up">Crear cuenta</button>
-          <button class="nav-link" data-ir="eq">Equipo</button>
-        </div>
-
         <!-- Cliente que ya tiene cuenta -->
         <div class="auth-vista" data-vista="in" data-titulo="Bienvenido" data-mensaje="Ingresa con tu teléfono y contraseña" data-boton="Entrar" hidden>
-          <input name="tel" autocomplete="username" class="form-control mb-2" placeholder="Teléfono registrado">
+          <input name="tel" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="15" data-input-rule="digits" autocomplete="username" class="form-control mb-2" placeholder="Teléfono registrado">
           <input name="clave" type="password" autocomplete="current-password" class="form-control mb-3" placeholder="Contraseña">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <button type="button" class="btn btn-link btn-sm p-0" data-ir="up">Crear cuenta</button>
+            <button type="button" class="btn btn-link btn-sm p-0 text-secondary" data-ir="eq">Acceso del equipo</button>
+          </div>
         </div>
 
         <!-- Cliente nuevo -->
         <div class="auth-vista" data-vista="up" data-titulo="Regístrate, es gratis" data-mensaje="Crea una cuenta para agendar y consultar tus citas" data-boton="Crear cuenta" hidden>
-          <input name="nombre" autocomplete="name" class="form-control mb-2" placeholder="Nombre completo">
-          <input name="tel" autocomplete="tel" class="form-control mb-2" placeholder="Teléfono / WhatsApp">
+          <input name="nombre" type="text" data-input-rule="letters" maxlength="100" autocomplete="name" class="form-control mb-2" placeholder="Nombre completo">
+          <input name="tel" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="15" data-input-rule="digits" autocomplete="tel" class="form-control mb-2" placeholder="Teléfono / WhatsApp">
           <input name="correo" type="email" autocomplete="email" class="form-control mb-2" placeholder="Correo electrónico">
           <input name="clave" type="password" autocomplete="new-password" minlength="6" maxlength="128" class="form-control mb-3" placeholder="Contraseña (mín. 6 caracteres)">
+          <p class="small text-center mb-3">¿Ya tienes cuenta? <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-ir="in">Iniciar sesión</button></p>
         </div>
 
         <!-- Administrador o barbero -->
         <div class="auth-vista" data-vista="eq" data-titulo="Acceso del equipo" data-mensaje="Barberos y administrador" data-boton="Entrar" hidden>
-          <input name="correo" autocomplete="username" class="form-control mb-2" placeholder="Correo">
+          <input name="correo" type="email" autocomplete="username" class="form-control mb-2" placeholder="Correo">
           <input name="clave" type="password" autocomplete="current-password" class="form-control mb-3" placeholder="Contraseña">
+          <p class="small text-center mb-3">¿Eres cliente? <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-ir="in">Volver al acceso de clientes</button></p>
         </div>
 
         <div class="text-danger small mb-2" id="authError"></div>

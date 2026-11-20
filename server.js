@@ -23,6 +23,9 @@ function error(status, message) {
 function text(value, max = 120) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
+function validName(value) {
+  return /\p{L}/u.test(value) && /^[\p{L}\p{M}\s.'’-]+$/u.test(value);
+}
 function hashToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
@@ -145,8 +148,8 @@ app.post("/api/auth/register", async (req, res) => {
   const email = text(req.body?.email, 160).toLowerCase();
   const phone = text(req.body?.phone, 25).replace(/\D/g, "");
   const password = typeof req.body?.password === "string" ? req.body.password : "";
-  if (name.length < 3 || !/^\S+@\S+\.\S+$/.test(email) || phone.length < 7 || password.length < 6 || password.length > 128) {
-    error(400, "Completa nombre, correo y teléfono; la contraseña debe tener entre 6 y 128 caracteres.");
+  if (!validName(name) || name.length < 3 || !/^\S+@\S+\.\S+$/.test(email) || phone.length < 7 || phone.length > 15 || password.length < 6 || password.length > 128) {
+    error(400, "Completa nombre, correo y un teléfono de 7 a 15 dígitos; la contraseña debe tener entre 6 y 128 caracteres.");
   }
   try {
     const result = await dbRun("INSERT INTO users(role,name,email,phone,password_hash) VALUES('cliente',?,?,?,?)",
@@ -258,14 +261,23 @@ app.get("/api/staff/appointments", requireUser, allow("admin", "barbero"), async
 app.patch("/api/staff/appointments/:id/status", requireUser, allow("admin", "barbero"), async (req, res) => {
   const status = String(req.body?.status || "");
   if (!["completada", "no_asistio", "cancelada"].includes(status)) error(400, "Estado no válido.");
-  const now = bogotaNow();
-  const current = `${now.date} ${toTime(now.minutes)}:00`;
-  const result = await dbRun(`UPDATE appointments SET status=? WHERE id=? AND status='reservada'
-    AND (?='admin' OR barber_id=?) AND (?!='completada' OR starts_at<=?)
-    AND (?!='no_asistio' OR starts_at<=?)`,
-  [status, Number(req.params.id), req.user.role, req.user.id, status, current, status, current]);
-  if (!result.affectedRows) error(409, "No se pudo cambiar el estado de esta cita.");
-  res.sendStatus(204);
+  const appointmentId = Number(req.params.id);
+  const appointment = await dbGet("SELECT id,status,barber_id AS barberId FROM appointments WHERE id=?", [appointmentId]);
+  if (!appointment) error(404, "No encontramos esa cita.");
+  if (req.user.role === "barbero" && appointment.barberId !== req.user.id) {
+    error(403, "Solo puedes actualizar tus propias citas.");
+  }
+  if (appointment.status !== "reservada") error(409, "Esta cita ya tiene un estado registrado.");
+
+  const result = await dbRun("UPDATE appointments SET status=? WHERE id=? AND status='reservada'", [status, appointmentId]);
+  if (!result.affectedRows) error(409, "La cita cambió mientras la actualizabas. Recarga la agenda e inténtalo de nuevo.");
+
+  const messages = {
+    completada: "La cita quedó registrada como completada.",
+    no_asistio: "Se registró que el cliente no asistió a la cita.",
+    cancelada: "La cita quedó cancelada.",
+  };
+  res.json({ message: messages[status] });
 });
 
 app.get("/api/staff/barbers", requireUser, allow("admin"), async (req, res) => {
@@ -275,7 +287,7 @@ app.post("/api/staff/barbers", requireUser, allow("admin"), async (req, res) => 
   const name = text(req.body?.name, 100);
   const email = text(req.body?.email, 160).toLowerCase();
   const password = typeof req.body?.password === "string" ? req.body.password : "";
-  if (name.length < 3 || !/^\S+@\S+\.\S+$/.test(email) || password.length < 6 || password.length > 128) {
+  if (!validName(name) || name.length < 3 || !/^\S+@\S+\.\S+$/.test(email) || password.length < 6 || password.length > 128) {
     error(400, "Escribe nombre, correo válido y contraseña de 6 a 128 caracteres.");
   }
   try {
